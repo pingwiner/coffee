@@ -13,10 +13,18 @@ class Office private constructor() {
     companion object {
         val instance: Office by lazy { Holder.INSTANCE }
     }
-    
+
     private var users = ArrayList<User>()
     private val random = Random()
-    private val timer = Timer("office", false)
+    private var timer = Timer("office", false)
+    private val lock = Object()
+
+    init {
+        reset()
+        timer.scheduleAtFixedRate(
+            timerTask { tick() },0,1000)
+    }
+    
     
     private fun randomBusyTime() : Long {
         if (random.nextInt(100) < Settings.instance.busyness) {
@@ -30,32 +38,32 @@ class Office private constructor() {
     }
     
     fun reset() {
-        timer.cancel()
-        users.clear();
-        for (i in 1..Settings.instance.usersCount) {
-            users.add(User(i, randomDrinkingTime(), randomBusyTime()))    
+        synchronized(lock) {
+            users.clear();
+            for (i in 1..Settings.instance.usersCount) {
+                users.add(User(i, randomDrinkingTime(), randomBusyTime()))
+            }
         }
-        timer.schedule(
-            timerTask { tick() },
-            1000)
     }
     
     private fun tick() {
-        for (user in users) {
-            if (!user.isBusy()) {
-                if (random.nextInt(100 * 60) < Settings.instance.busyness) {
-                    user.timeBecameBusy = Date().time
+        synchronized(lock) {
+            for (user in users) {
+                if (!user.isBusy()) {
+                    if (random.nextInt(100 * 60) < Settings.instance.busyness) {
+                        user.timeBecameBusy = Date().time
+                        EventBus.getDefault().post(UserStatusChangedEvent(user))
+                    }
+                } else {
+                    if (Date().time - user.timeBecameBusy > Settings.instance.busyHours * 1000 * 60) {
+                        user.timeBecameBusy = 0
+                        EventBus.getDefault().post(UserStatusChangedEvent(user))
+                    }
+                }
+                if (user.isThirsty() && !Machine.instance.isUserInQueue(user)) {
+                    Machine.instance.makeCoffee(user)
                     EventBus.getDefault().post(UserStatusChangedEvent(user))
                 }
-            } else {
-                if (Date().time - user.timeBecameBusy > Settings.instance.busyHours * 1000 * 60) {
-                    user.timeBecameBusy = 0
-                    EventBus.getDefault().post(UserStatusChangedEvent(user))
-                }
-            }            
-            if (user.isThirsty() && !Machine.instance.isUserInQueue(user)) {
-                Machine.instance.makeCoffee(user)
-                EventBus.getDefault().post(UserStatusChangedEvent(user))
             }
         }
     } 

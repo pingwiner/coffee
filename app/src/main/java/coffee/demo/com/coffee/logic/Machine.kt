@@ -34,7 +34,7 @@ class Machine private constructor() {
 
     private var queue : PriorityQueue<Job> = PriorityQueue(10, CompareJobs)
     private var currentJob: Job? = null
-    private val timer = Timer("machine", false)    
+    private var timer: Timer? = null    
 
     fun makeCoffee(user: User) {
         queue.add(Job(user, Date()))        
@@ -50,8 +50,8 @@ class Machine private constructor() {
         } else {
             EventBus.getDefault().post(QueueSizeChangedEvent(queue.size + 1))
         }
-        
-        timer.schedule(
+        timer = Timer("machine", false)
+        timer?.schedule(
                 timerTask { cupIsReady() },
                 Settings.instance.timeNeededToMakeCoffee)
     }
@@ -77,7 +77,7 @@ class Machine private constructor() {
     }
     
     fun reset() {
-        timer.cancel()
+        timer?.cancel()
         currentJob = null      
         queue.clear()                
     }
