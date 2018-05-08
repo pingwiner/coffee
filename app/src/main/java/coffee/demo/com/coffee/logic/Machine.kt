@@ -88,4 +88,8 @@ class Machine private constructor() {
         }
         return false
     }
+    
+    fun getQueueSize() : Int {
+        return queue.size
+    }
 }

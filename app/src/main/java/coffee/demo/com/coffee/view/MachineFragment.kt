@@ -6,6 +6,11 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
 import coffee.demo.com.coffee.R
+import coffee.demo.com.coffee.events.QueueSizeChangedEvent
+import coffee.demo.com.coffee.events.UserStatusChangedEvent
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 class MachineFragment : Fragment() {
@@ -27,4 +32,25 @@ class MachineFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
     }
+    
+    public override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    public override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+    
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onQueueSizeChanged(event: QueueSizeChangedEvent) {
+        
+    }
+    
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onUserStatusChanged(event: UserStatusChangedEvent) {
+        
+    }
+
 }

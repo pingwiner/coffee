@@ -6,6 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import coffee.demo.com.coffee.R
+import coffee.demo.com.coffee.events.QueueSizeChangedEvent
+import coffee.demo.com.coffee.events.UserStatusChangedEvent
+import coffee.demo.com.coffee.logic.Machine
+import coffee.demo.com.coffee.logic.Office
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class OfficeFragment : Fragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,6 +23,8 @@ class OfficeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_office, container, false)
+        Office.instance.getUserCount()
+        Machine.instance.getQueueSize()
         return v
     }
 
@@ -26,5 +35,26 @@ class OfficeFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
     }
+
+    public override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    public override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+    
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onQueueSizeChanged(event: QueueSizeChangedEvent) {
+        
+    }
+    
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onUserStatusChanged(event: UserStatusChangedEvent) {
+        
+    }
+    
 
 }

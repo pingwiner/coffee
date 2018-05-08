@@ -66,6 +66,10 @@ class Office private constructor() {
                 }
             }
         }
+    }
+    
+    fun getUserCount() : Int {
+        return users.size
     } 
     
 }
