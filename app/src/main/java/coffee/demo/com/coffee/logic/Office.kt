@@ -1,0 +1,63 @@
+package coffee.demo.com.coffee.logic
+
+import coffee.demo.com.coffee.model.Settings
+import coffee.demo.com.coffee.model.User
+import coffee.demo.com.coffee.events.UserStatusChangedEvent
+import org.greenrobot.eventbus.EventBus
+import java.util.*
+import kotlin.concurrent.timerTask
+
+class Office private constructor() {
+    private object Holder { val INSTANCE = Office() }
+    
+    companion object {
+        val instance: Office by lazy { Holder.INSTANCE }
+    }
+    
+    private var users = ArrayList<User>()
+    private val random = Random()
+    private val timer = Timer("office", false)
+    
+    private fun randomBusyTime() : Long {
+        if (random.nextInt(100) < Settings.instance.busyness) {
+            return Date().time - random.nextInt(1000 * 60 * Settings.instance.busyHours)
+        }
+        return 0
+    }
+    
+    private fun randomDrinkingTime() : Long {
+        return Date().time - random.nextInt(1000 * 60)
+    }
+    
+    fun reset() {
+        timer.cancel()
+        users.clear();
+        for (i in 1..Settings.instance.usersCount) {
+            users.add(User(i, randomDrinkingTime(), randomBusyTime()))    
+        }
+        timer.schedule(
+            timerTask { tick() },
+            1000)
+    }
+    
+    private fun tick() {
+        for (user in users) {
+            if (!user.isBusy()) {
+                if (random.nextInt(100 * 60) < Settings.instance.busyness) {
+                    user.timeBecameBusy = Date().time
+                    EventBus.getDefault().post(UserStatusChangedEvent(user))
+                }
+            } else {
+                if (Date().time - user.timeBecameBusy > Settings.instance.busyHours * 1000 * 60) {
+                    user.timeBecameBusy = 0
+                    EventBus.getDefault().post(UserStatusChangedEvent(user))
+                }
+            }            
+            if (user.isThirsty() && !Machine.instance.isUserInQueue(user)) {
+                Machine.instance.makeCoffee(user)
+                EventBus.getDefault().post(UserStatusChangedEvent(user))
+            }
+        }
+    } 
+    
+}
