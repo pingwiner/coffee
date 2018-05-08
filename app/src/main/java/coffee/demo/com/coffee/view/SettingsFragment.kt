@@ -12,32 +12,28 @@ import coffee.demo.com.coffee.R
 import coffee.demo.com.coffee.logic.Machine
 import coffee.demo.com.coffee.logic.Office
 import coffee.demo.com.coffee.model.Settings
+import kotlinx.android.synthetic.main.fragment_settings.*
 
 class SettingsFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     val userCountText : String by lazy {getString(R.string.user_count) + ": "}
     val busynessText: String by lazy {getString(R.string.busyness) + ": "}
     val busyHoursText: String by lazy {getString(R.string.busy_hours) + ": "}
     
-    var userCountLabel : TextView? = null; 
-    var busynessLabel : TextView? = null;
-    var busyHoursLabel : TextView? = null;
-    
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        
+        super.onCreate(savedInstanceState)        
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_settings, container, false)
-        v.findViewById<SeekBar>(R.id.userCountBar).setOnSeekBarChangeListener(this)
-        v.findViewById<SeekBar>(R.id.busynessBar).setOnSeekBarChangeListener(this)
-        v.findViewById<SeekBar>(R.id.busyHoursBar).setOnSeekBarChangeListener(this)
-        userCountLabel = v.findViewById(R.id.userCountLabel)
-        busynessLabel = v.findViewById(R.id.busynessLabel)
-        busyHoursLabel = v.findViewById(R.id.busyHoursLabel)
+        return inflater.inflate(R.layout.fragment_settings, container, false)
+    }
+    
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        userCountBar.setOnSeekBarChangeListener(this)
+        busynessBar.setOnSeekBarChangeListener(this)
+        busyHoursBar.setOnSeekBarChangeListener(this)        
         updateViewState()
-        return v
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -75,9 +71,12 @@ class SettingsFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     }
     
     private fun updateViewState() {
-        userCountLabel?.setText(userCountText + Settings.instance.usersCount)
-        busynessLabel?.setText(busynessText + Settings.instance.busyness)
-        busyHoursLabel?.setText(busyHoursText + Settings.instance.busyHours)
+        userCountLabel.setText(userCountText + Settings.instance.usersCount)
+        busynessLabel.setText(busynessText + Settings.instance.busyness)
+        busyHoursLabel.setText(busyHoursText + Settings.instance.busyHours)
+        userCountBar.setProgress(Settings.instance.usersCount - 1)
+        busynessBar.setProgress(Settings.instance.busyness)
+        busyHoursBar.setProgress(Settings.instance.busyHours - 1)
     }
 
 }
