@@ -4,30 +4,101 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ffffff">
 
     <ImageView
         android:id="@+id/coffeeMachineIcon"
+        android:src="@drawable/coffee_machine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"        
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/userQueueIcon"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"        
+        app:layout_constraintStart_toEndOf="@id/coffeeMachineIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal">
+
+        <coffee.demo.com.coffee.view.QueueUserView
+            android:id="@+id/user1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">        
+        </coffee.demo.com.coffee.view.QueueUserView>
+
+        <coffee.demo.com.coffee.view.QueueUserView
+            android:id="@+id/user2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">        
+        </coffee.demo.com.coffee.view.QueueUserView>
+
+        <coffee.demo.com.coffee.view.QueueUserView
+            android:id="@+id/user3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">        
+        </coffee.demo.com.coffee.view.QueueUserView>
+
+        <coffee.demo.com.coffee.view.QueueUserView
+            android:id="@+id/user4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">        
+        </coffee.demo.com.coffee.view.QueueUserView>
+
+        <coffee.demo.com.coffee.view.QueueUserView
+            android:id="@+id/user5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">        
+        </coffee.demo.com.coffee.view.QueueUserView>
+
+        <coffee.demo.com.coffee.view.QueueUserView
+            android:id="@+id/user6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">        
+        </coffee.demo.com.coffee.view.QueueUserView>
+
+        <coffee.demo.com.coffee.view.QueueUserView
+            android:id="@+id/user7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">        
+        </coffee.demo.com.coffee.view.QueueUserView>
+
+        <coffee.demo.com.coffee.view.QueueUserView
+            android:id="@+id/user8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">        
+        </coffee.demo.com.coffee.view.QueueUserView>
+
+        <coffee.demo.com.coffee.view.QueueUserView
+            android:id="@+id/user9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">        
+        </coffee.demo.com.coffee.view.QueueUserView>
+
+        <coffee.demo.com.coffee.view.QueueUserView
+            android:id="@+id/user10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">        
+        </coffee.demo.com.coffee.view.QueueUserView>
+        
+    </LinearLayout>
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/userGridView"
-        android:layout_width="0dp"
-        android:layout_height="350dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:columnWidth="90dp"
         android:gravity="center"
         android:horizontalSpacing="10dp"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
         android:verticalSpacing="10dp"
-        tools:layout_editor_absoluteY="161dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coffeeMachineIcon" />
     
 </android.support.constraint.ConstraintLayout>

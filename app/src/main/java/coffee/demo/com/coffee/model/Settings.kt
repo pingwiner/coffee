@@ -15,6 +15,6 @@ class Settings private constructor() {
     var busyHours: Int = 1
 
     //Simulated time goes 60 times faster, so this is minutes in simulated time, but seconds in real time
-    val timeNeededToMakeCoffee: Long = 3
+    val timeNeededToMakeCoffee: Long = 5
 }
 

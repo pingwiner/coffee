@@ -15,12 +15,8 @@ class MainActivity : AppCompatActivity() {
                 pager.setCurrentItem(0);
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_dashboard -> {
-                pager.setCurrentItem(1);
-                return@OnNavigationItemSelectedListener true
-            }
             R.id.navigation_notifications -> {
-                pager.setCurrentItem(2);
+                pager.setCurrentItem(1);
                 return@OnNavigationItemSelectedListener true
             }
         }

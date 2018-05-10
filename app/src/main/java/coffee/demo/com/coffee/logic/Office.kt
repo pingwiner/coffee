@@ -72,4 +72,8 @@ class Office private constructor() {
         return users.size
     } 
     
+    fun getUser(index: Int) : User {
+        return users[index]
+    }
+    
 }

@@ -53,7 +53,7 @@ class Machine private constructor() {
         timer = Timer("machine", false)
         timer?.schedule(
                 timerTask { cupIsReady() },
-                Settings.instance.timeNeededToMakeCoffee)
+                Settings.instance.timeNeededToMakeCoffee * 1000)
     }
 
     private fun cupIsReady() {
@@ -87,6 +87,18 @@ class Machine private constructor() {
             if (job.user.id == user.id) return true
         }
         return false
+    }
+    
+    fun getUsersInQueue() : List<User> {
+        val users = ArrayList<User>();
+        val j = currentJob   
+        if (j != null)  {
+            users.add(j.user)    
+        }            
+        for(job in queue) {
+            users.add(job.user)    
+        }       
+        return users
     }
     
     fun getQueueSize() : Int {

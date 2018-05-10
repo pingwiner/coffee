@@ -9,15 +9,19 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
 import coffee.demo.com.coffee.R
+import coffee.demo.com.coffee.events.SettingsChangedEvent
+import coffee.demo.com.coffee.events.UserStatusChangedEvent
 import coffee.demo.com.coffee.logic.Machine
 import coffee.demo.com.coffee.logic.Office
 import coffee.demo.com.coffee.model.Settings
 import kotlinx.android.synthetic.main.fragment_settings.*
+import org.greenrobot.eventbus.EventBus
 
 class SettingsFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     val userCountText : String by lazy {getString(R.string.user_count) + ": "}
     val busynessText: String by lazy {getString(R.string.busyness) + ": "}
     val busyHoursText: String by lazy {getString(R.string.busy_hours) + ": "}
+    var settingsChanged = false;
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)        
@@ -50,12 +54,17 @@ class SettingsFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
     }
 
+    override fun onPause() {
+        super.onPause()
+        EventBus.getDefault().post(SettingsChangedEvent())
+    }
+    
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         when(seekBar?.id) {
             R.id.userCountBar -> {
                 Settings.instance.usersCount = progress + 1                
                 Office.instance.reset()
-                Machine.instance.reset()
+                Machine.instance.reset()                
             }
             R.id.busynessBar -> {
                 Settings.instance.busyness = progress                
@@ -67,6 +76,7 @@ class SettingsFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 Log.e("Bad view state", "seekBar id: " + seekBar?.id);
             }
         }
+        settingsChanged = true;
         updateViewState()
     }
     
