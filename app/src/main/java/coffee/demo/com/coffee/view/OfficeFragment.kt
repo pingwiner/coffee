@@ -35,9 +35,7 @@ class OfficeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val userCount = Office.instance.getUserCount()
-        val queueSize = Machine.instance.getQueueSize()
-        queueImages = Arrays.asList(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10)        
+        queueImages = Arrays.asList(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10)
         adapter = UserGridAdapter(context)
         userGridView.adapter = adapter      
         updateUserQueue()
@@ -93,7 +91,7 @@ class OfficeFragment : Fragment() {
         for (user in Machine.instance.getUsersInQueue()) {
             queueImages?.get(i)?.setAvatarByIndex(context, user.id)
             queueImages?.get(i)?.setBusy(user.isBusy())
-            i = i + 1
+            if (++i > 9) break
         }        
     }
     

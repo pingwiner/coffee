@@ -1,5 +1,6 @@
 package coffee.demo.com.coffee.logic
 
+import android.util.Log
 import coffee.demo.com.coffee.model.Settings
 import coffee.demo.com.coffee.model.User
 import coffee.demo.com.coffee.events.UserStatusChangedEvent
@@ -40,7 +41,7 @@ class Office private constructor() {
     fun reset() {
         synchronized(lock) {
             users.clear();
-            for (i in 1..Settings.instance.usersCount) {
+            for (i in 0..Settings.instance.usersCount - 1) {
                 users.add(User(i, randomDrinkingTime(), randomBusyTime()))
             }
         }
@@ -49,8 +50,10 @@ class Office private constructor() {
     private fun tick() {
         synchronized(lock) {
             for (user in users) {
+                if (Machine.instance.isUserInQueue(user)) continue
+
                 if (!user.isBusy()) {
-                    if (random.nextInt(100 * 60) < Settings.instance.busyness) {
+                    if ((random.nextInt(100 * 60) < Settings.instance.busyness)) {
                         user.timeBecameBusy = Date().time
                         EventBus.getDefault().post(UserStatusChangedEvent(user))
                     }
@@ -60,7 +63,8 @@ class Office private constructor() {
                         EventBus.getDefault().post(UserStatusChangedEvent(user))
                     }
                 }
-                if (user.isThirsty() && !Machine.instance.isUserInQueue(user)) {
+
+                if (user.isThirsty() && !Machine.instance.isUserInQueue(user) && Machine.instance.getQueueSize() < 9) {
                     Machine.instance.makeCoffee(user)
                     EventBus.getDefault().post(UserStatusChangedEvent(user))
                 }

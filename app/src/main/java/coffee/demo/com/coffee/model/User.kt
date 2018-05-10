@@ -2,8 +2,6 @@ package coffee.demo.com.coffee.model
 
 import java.util.*
 
-enum class Priority {NORMAL, HIGH}
-
 data class User(val id: Int, var lastTimeDrink: Long, var timeBecameBusy: Long) {
     
     fun isThirsty() : Boolean {

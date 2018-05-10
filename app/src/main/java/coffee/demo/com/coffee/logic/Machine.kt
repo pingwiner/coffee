@@ -16,8 +16,8 @@ class CompareJobs {
     companion object : Comparator<Job> {
 
         override fun compare(a: Job, b: Job): Int = when {
-            a.user.isBusy() && !b.user.isBusy() -> 1
-            !a.user.isBusy() && b.user.isBusy() -> -1
+            a.user.isBusy() && !b.user.isBusy() -> -1
+            !a.user.isBusy() && b.user.isBusy() -> 1
             else -> a.startTime.compareTo(b.startTime)
         }
         
@@ -32,12 +32,13 @@ class Machine private constructor() {
         val STATE_READY = -1
     }
 
-    private var queue : PriorityQueue<Job> = PriorityQueue(10, CompareJobs)
+    private var queue : LinkedList<Job> = LinkedList()
     private var currentJob: Job? = null
     private var timer: Timer? = null    
 
     fun makeCoffee(user: User) {
-        queue.add(Job(user, Date()))        
+        queue.add(Job(user, Date()))
+        queue.sortWith(CompareJobs)
         if (currentJob == null) makeNextCup()
     }
 
@@ -83,6 +84,11 @@ class Machine private constructor() {
     }
     
     fun isUserInQueue(user: User) : Boolean {
+        val j = currentJob
+        if (j != null) {
+            if (j.user.equals(user)) return true
+        }
+
         for(job in queue) {
             if (job.user.id == user.id) return true
         }
@@ -91,10 +97,15 @@ class Machine private constructor() {
     
     fun getUsersInQueue() : List<User> {
         val users = ArrayList<User>();
-        val j = currentJob   
+        val j = currentJob
+
+        //First guy is waiting for the cup that is currently prepared
+        //Nobody can stand before him because his order already processed
         if (j != null)  {
             users.add(j.user)    
-        }            
+        }
+
+        //Other people waiting in queue
         for(job in queue) {
             users.add(job.user)    
         }       
@@ -104,4 +115,5 @@ class Machine private constructor() {
     fun getQueueSize() : Int {
         return queue.size
     }
+
 }

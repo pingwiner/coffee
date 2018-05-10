@@ -21,11 +21,7 @@ class SettingsFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     val userCountText : String by lazy {getString(R.string.user_count) + ": "}
     val busynessText: String by lazy {getString(R.string.busyness) + ": "}
     val busyHoursText: String by lazy {getString(R.string.busy_hours) + ": "}
-    var settingsChanged = false;
-    
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)        
-    }
+    var settingsChanged = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -40,13 +36,6 @@ class SettingsFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         updateViewState()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
     }
@@ -62,9 +51,11 @@ class SettingsFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         when(seekBar?.id) {
             R.id.userCountBar -> {
-                Settings.instance.usersCount = progress + 1                
-                Office.instance.reset()
-                Machine.instance.reset()                
+                Settings.instance.usersCount = progress + 1
+                if (fromUser) {
+                    Office.instance.reset()
+                    Machine.instance.reset()
+                }
             }
             R.id.busynessBar -> {
                 Settings.instance.busyness = progress                

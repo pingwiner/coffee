@@ -24,5 +24,10 @@ class UserView @JvmOverloads constructor(context: Context?, attrs: AttributeSet?
         
         findViewById<ImageView>(R.id.avatar).setImageBitmap(bitmap)       
     }
+
+    fun goAway() {
+        findViewById<ImageView>(R.id.avatar).setImageResource(R.drawable.coffee_time)
+        setBusy(false)
+    }
     
 }

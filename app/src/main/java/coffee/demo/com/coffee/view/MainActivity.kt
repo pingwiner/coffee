@@ -28,8 +28,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         pageAdapter = PageAdapter(getSupportFragmentManager())        
-        pager.setAdapter(pageAdapter);
-        
+        pager.setAdapter(pageAdapter)
     }
 
 

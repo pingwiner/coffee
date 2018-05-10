@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import coffee.demo.com.coffee.logic.Machine
 import coffee.demo.com.coffee.logic.Office
 
 class UserGridAdapter : BaseAdapter {
@@ -28,8 +29,12 @@ class UserGridAdapter : BaseAdapter {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val user = Office.instance.getUser(position)
         val userView: UserView = (convertView ?: UserView(context)) as UserView
-        userView.setAvatarByIndex(context, position)
-        userView.setBusy(user.isBusy())        
+        if (Machine.instance.isUserInQueue(user)) {
+            userView.goAway()
+        } else {
+            userView.setAvatarByIndex(context, position)
+            userView.setBusy(user.isBusy())
+        }
         return userView
     }   
     

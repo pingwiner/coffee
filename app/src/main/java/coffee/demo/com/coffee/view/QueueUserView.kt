@@ -10,8 +10,6 @@ import coffee.demo.com.coffee.R
 class QueueUserView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : BaseUserView(context, attrs, defStyleAttr) {
 
-    private val TAG = "QueueUserView"
-    
     override fun getLayoutResId() : Int {
         return R.layout.queue_user_view
     }
