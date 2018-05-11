@@ -7,10 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import android.widget.TextView
 import coffee.demo.com.coffee.R
-import coffee.demo.com.coffee.events.SettingsChangedEvent
-import coffee.demo.com.coffee.events.UserStatusChangedEvent
+import coffee.demo.com.coffee.events.RefreshEvent
 import coffee.demo.com.coffee.logic.Machine
 import coffee.demo.com.coffee.logic.Office
 import coffee.demo.com.coffee.model.Settings
@@ -36,7 +34,6 @@ class SettingsFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         updateViewState()
     }
 
-
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
     }
 
@@ -45,7 +42,14 @@ class SettingsFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     override fun onPause() {
         super.onPause()
-        EventBus.getDefault().post(SettingsChangedEvent())
+        if (settingsChanged) {
+            EventBus.getDefault().post(RefreshEvent("Settings changed"))
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        settingsChanged = false
     }
     
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {

@@ -1,9 +1,8 @@
 package coffee.demo.com.coffee.logic
 
-import android.util.Log
+import coffee.demo.com.coffee.events.RefreshEvent
 import coffee.demo.com.coffee.model.Settings
 import coffee.demo.com.coffee.model.User
-import coffee.demo.com.coffee.events.UserStatusChangedEvent
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -55,18 +54,18 @@ class Office private constructor() {
                 if (!user.isBusy()) {
                     if ((random.nextInt(100 * 60) < Settings.instance.busyness)) {
                         user.timeBecameBusy = Date().time
-                        EventBus.getDefault().post(UserStatusChangedEvent(user))
+                        EventBus.getDefault().post(RefreshEvent("User " + user.id + " became busy"))
                     }
                 } else {
                     if (Date().time - user.timeBecameBusy > Settings.instance.busyHours * 1000 * 60) {
                         user.timeBecameBusy = 0
-                        EventBus.getDefault().post(UserStatusChangedEvent(user))
+                        EventBus.getDefault().post(RefreshEvent("User " + user.id + " became not busy"))
                     }
                 }
 
                 if (user.isThirsty() && !Machine.instance.isUserInQueue(user) && Machine.instance.getQueueSize() < 9) {
                     Machine.instance.makeCoffee(user)
-                    EventBus.getDefault().post(UserStatusChangedEvent(user))
+                    EventBus.getDefault().post(RefreshEvent("User " + user.id + (if (user.isBusy()) " (busy)" else "") + " have coffee break"))
                 }
             }
         }

@@ -6,14 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import coffee.demo.com.coffee.R
-import coffee.demo.com.coffee.events.QueueSizeChangedEvent
-import coffee.demo.com.coffee.events.SettingsChangedEvent
-import coffee.demo.com.coffee.events.UserStatusChangedEvent
+import coffee.demo.com.coffee.events.RefreshEvent
 import coffee.demo.com.coffee.logic.Machine
-import coffee.demo.com.coffee.logic.Office
-import coffee.demo.com.coffee.model.User
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -25,10 +20,6 @@ class OfficeFragment : Fragment() {
     private val TAG = "OfficeFragment"
     var queueImages : List<QueueUserView>? = null
     
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)        
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_office, container, false)
@@ -39,15 +30,7 @@ class OfficeFragment : Fragment() {
         adapter = UserGridAdapter(context)
         userGridView.adapter = adapter      
         updateUserQueue()
-    }
-    
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
+    }   
 
     override fun onStart() {
         super.onStart()
@@ -57,32 +40,16 @@ class OfficeFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         EventBus.getDefault().unregister(this)
-    }
-    
+    }    
+   
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onQueueSizeChanged(event: QueueSizeChangedEvent) {
-        val count = Machine.instance.getQueueSize()
-        Log.d(TAG, "onQueueSizeChanged: " + count);
-        adapter?.notifyDataSetChanged()
-        updateUserQueue()
-    }
-    
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onUserStatusChanged(event: UserStatusChangedEvent) {
-        Log.d(TAG, "onUserStatusChanged: " + event.user.id);
-        adapter?.notifyDataSetChanged()
-        updateUserQueue()
-    }
-    
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onSettingsChanged(event: SettingsChangedEvent) {
-        Log.d(TAG, "onSettingsChanged");
+    fun onRefreshEvent(event: RefreshEvent) {
+        Log.d(TAG, event.message);
         adapter?.notifyDataSetChanged()
         updateUserQueue()
     }
     
     fun updateUserQueue() {        
-        Log.d(TAG, "updateUserQueue");
         val count = Machine.instance.getQueueSize()
         for (it in count..9) {
             queueImages?.get(it)?.hide()

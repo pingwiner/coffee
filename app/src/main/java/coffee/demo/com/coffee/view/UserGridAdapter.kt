@@ -36,7 +36,6 @@ class UserGridAdapter : BaseAdapter {
             userView.setBusy(user.isBusy())
         }
         return userView
-    }   
-    
+    }      
 
 }

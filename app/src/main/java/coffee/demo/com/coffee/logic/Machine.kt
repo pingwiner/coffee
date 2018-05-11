@@ -3,8 +3,7 @@ package coffee.demo.com.coffee.logic
 import android.util.Log
 import coffee.demo.com.coffee.model.Settings
 import coffee.demo.com.coffee.model.User
-import coffee.demo.com.coffee.events.QueueSizeChangedEvent
-import coffee.demo.com.coffee.events.UserStatusChangedEvent
+import coffee.demo.com.coffee.events.RefreshEvent
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -46,10 +45,10 @@ class Machine private constructor() {
         currentJob = queue.poll()
         
         if (currentJob == null) {
-            EventBus.getDefault().post(QueueSizeChangedEvent(0))
+            EventBus.getDefault().post(RefreshEvent("No more people in queue"))
             return
         } else {
-            EventBus.getDefault().post(QueueSizeChangedEvent(queue.size + 1))
+            EventBus.getDefault().post(RefreshEvent((queue.size + 1).toString() + " people in queue"))            
         }
         timer = Timer("machine", false)
         timer?.schedule(
@@ -63,11 +62,10 @@ class Machine private constructor() {
             Log.e("Bad machine state", "currentJob is null")             
         } else {
             user.lastTimeDrink = Date().time
-            EventBus.getDefault().post(UserStatusChangedEvent(user))
+            EventBus.getDefault().post(RefreshEvent("User " + user.id + " returned to workplace"))            
         }
         makeNextCup()
     }
-
     
     fun getCurrentJobState() : Int {
         val startTime = currentJob?.startTime
